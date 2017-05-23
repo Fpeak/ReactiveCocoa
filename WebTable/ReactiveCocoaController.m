@@ -74,7 +74,7 @@
         return @([userPassValid boolValue] &&[comfirmPass boolValue]);
     }];
     [signUpActionSignal subscribeNext:^(id  _Nullable x) {
-        self.sureBtn.enabled = [x boolValue];
+        self.sureBtn.enabled = ![x boolValue];
     }];
     //点击按钮的触发
     [[self.sureBtn rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(__kindof UIControl * _Nullable x) {
