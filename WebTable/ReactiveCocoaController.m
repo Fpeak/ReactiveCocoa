@@ -8,6 +8,8 @@
 
 #import "ReactiveCocoaController.h"
 #import "ReactiveObjC.h"
+#import <Speech/Speech.h>
+#import "NameViewController.h"
 @interface ReactiveCocoaController ()
 @property (weak, nonatomic) IBOutlet UILabel *sumLabel;
 @property (weak, nonatomic) IBOutlet UITextField *userPass;
@@ -20,6 +22,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.title = @"RectiveCocoa";
     //监听输入
     [self.userPass.rac_textSignal subscribeNext:^(NSString * _Nullable x) {
         NSLog(@"text = %@",x);
@@ -40,7 +43,7 @@
 //    }]subscribeNext:^(id  _Nullable x) {
 //        NSLog(@"length = %@",x);
 //    }];
-    
+   
     //创建一些信号,来表示用户名和密码输入框中的输入内容是否有效
     RACSignal *validUserPassSignal = [self.userPass.rac_textSignal map:^id _Nullable(NSString * _Nullable value) {
         return @([self isValidUsername:value]);
@@ -79,7 +82,10 @@
     //点击按钮的触发
     [[self.sureBtn rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(__kindof UIControl * _Nullable x) {
         NSLog(@"button click --");
+        NameViewController *name = [[NameViewController alloc]init];
+        [self.navigationController pushViewController:name animated:YES];
     }];
+    
     
 }
 
