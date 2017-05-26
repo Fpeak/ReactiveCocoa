@@ -23,6 +23,25 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"RectiveCocoa";
+    
+    //RACsignal是RACStream的子类,也是reactiveCocoa的核心类
+    //RACSequence也是RACStream的子类
+    //RACStream不提供方法的实现
+    //map是一般用来信号交换的
+    //mapreplace替换原信号发送过来的值(不管原信号发送的什么值,发送的值,都返回入参object的值)
+    //reduceEach
+    RACSignal *signal = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+        [subscriber sendNext:@1];
+        [subscriber sendNext:@2];
+        [subscriber sendNext:@"next"];
+        [subscriber sendCompleted];
+        return [RACDisposable disposableWithBlock:^{
+            NSLog(@"ssss");
+        }];
+    }];
+    [signal subscribeNext:^(id  _Nullable x) {
+        NSLog(@"%@", x);
+    }];
     //监听输入
     [self.userPass.rac_textSignal subscribeNext:^(NSString * _Nullable x) {
         NSLog(@"text = %@",x);
@@ -48,6 +67,7 @@
     RACSignal *validUserPassSignal = [self.userPass.rac_textSignal map:^id _Nullable(NSString * _Nullable value) {
         return @([self isValidUsername:value]);
     }];
+    
     RACSignal *validConfirmPassSign = [self.confirmPass.rac_textSignal map:^id _Nullable(NSString * _Nullable value) {
         return @([self isValidPassword:value]);
     }];
@@ -76,9 +96,11 @@
     RACSignal *signUpActionSignal = [RACSignal combineLatest:@[validUserPassSignal,validConfirmPassSign] reduce:^id(NSNumber *userPassValid,NSNumber *comfirmPass){
         return @([userPassValid boolValue] &&[comfirmPass boolValue]);
     }];
+    
     [signUpActionSignal subscribeNext:^(id  _Nullable x) {
         self.sureBtn.enabled = ![x boolValue];
     }];
+    
     //点击按钮的触发
     [[self.sureBtn rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(__kindof UIControl * _Nullable x) {
         NSLog(@"button click --");

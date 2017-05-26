@@ -106,7 +106,7 @@
 
 - (void)sendCompleted {
 	[self.disposable dispose];
-	
+
 	[self enumerateSubscribersUsingBlock:^(id<RACSubscriber> subscriber) {
 		[subscriber sendCompleted];
 	}];
